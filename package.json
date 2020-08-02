@@ -1,10 +1,10 @@
 {
   "name": "@jensbodal/lndir",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Symlink specific directories within an npm package",
   "main": "lndir.js",
   "bin": {
-    "lndir": "./lindir.js"
+    "lndir": "./lndir.js"
   },
   "repository": "https://github.com/jensbodal/lndir",
   "author": "Jens Bodal",
