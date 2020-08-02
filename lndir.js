@@ -6,7 +6,7 @@ const { resolve } = require('path');
 const readJson = filePath => JSON.parse(require(filePath));
 const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(json, null, 2));
 
-(async(argv) => {
+(async(argv, currentPath) => {
   const [ nodePath, scriptPath, ...args ] = argv;
   const homeDir = os.homedir();
   const configDir = `${homeDir}/.config/npm/lndir`;
@@ -43,7 +43,7 @@ const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(jso
   // check if we are given the name of a package to link and then try to link it
   if (mappings[linkThis]) {
     const mapping = mappings[linkThis];
-    const expectedLocalPackageDir = `./node_modules/${linkThis}`;
+    const expectedLocalPackageDir = `${currentPath}/node_modules/${linkThis}`;
 
     if (!existsSync(expectedLocalPackageDir)) {
       console.error('You must install the package normally before replacing it with a linked version');
@@ -83,12 +83,13 @@ const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(jso
       return;
     }
 
-    if (!existsSync('./package.json')) {
+    if (!existsSync(`${currentPath}/package.json`)) {
       console.error('Script must be executed in the same directory that your package.json file exists at')
       return;
     }
 
-    const packageJson = require('./package.json');
+    const packageJson = require(`${currentPath}/package.json`);
+    console.log(__dirname);
 
     if (!typeof packageJson === 'object' || !packageJson.name) {
       console.error('package.json file must contain a name property');
@@ -99,7 +100,7 @@ const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(jso
     const pathToLink = resolve(linkThis);
 
     if (mappings[linkName]) {
-      console.log(`Mapping already exists for ${linkName} at ${mappings[linkName]}`);
+      console.log(`Mapping already exists for ${linkName} at ${mappings[linkName].absolutePath}`);
       console.log('Previous mapping will be removed');
     }
 
@@ -115,4 +116,4 @@ const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(jso
 
     return;
   }
-})(process.argv);
+})(process.argv, process.cwd());
