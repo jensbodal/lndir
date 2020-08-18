@@ -53,10 +53,10 @@ const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(jso
     const linkPathAt = `${expectedLocalPackageDir}/${mapping.linkedPath}`;
     const backupPath = `${linkPathAt}.bak`;
 
-    console.log(`Linking [${mapping.absolutePath}] to [${linkPathAt}]`);
+    console.log(`Linking:\n\t"${mapping.absolutePath}"\n\tto\n\t"${linkPathAt}"\n`);
 
     if (existsSync(backupPath)) {
-      console.error(`Backup exists at [${backupPath}]`);
+      console.error(`Backup exists at:\n\t"${backupPath}"\n`);
       console.error('Either restore this directory or remove it to continue');
       return;
     }
