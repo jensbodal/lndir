@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const os = require('os');
 const { existsSync, mkdirSync, renameSync, symlinkSync, writeFileSync }  = require('fs')
-const { resolve } = require('path');
+const { dirname, resolve, relative } = require('path');
 
 const readJson = filePath => JSON.parse(require(filePath));
 const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(json, null, 2));
@@ -116,6 +116,7 @@ const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(jso
 
     const linkName = packageJson.name;
     const pathToLink = resolve(linkThis);
+    const linkedPath = relative(dirname(packageJsonPath), resolve(linkThis));
 
     if (mappings[linkName]) {
       console.log(`Mapping already exists for ${linkName} at ${mappings[linkName].absolutePath}`);
@@ -126,7 +127,7 @@ const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(jso
 
     mappings[linkName] = {};
     mappings[linkName].absolutePath = pathToLink;
-    mappings[linkName].linkedPath = linkThis;
+    mappings[linkName].linkedPath = linkedPath;
 
     writeJson(linksFilepath, mappings);
 
