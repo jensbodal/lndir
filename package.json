@@ -1,6 +1,6 @@
 {
   "name": "@jensbodal/lndir",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Symlink specific directories within an npm package",
   "main": "lndir.js",
   "bin": {

@@ -83,15 +83,33 @@ const writeJson = (filePath, json) => writeFileSync(filePath, JSON.stringify(jso
       return;
     }
 
-    if (!existsSync(`${currentPath}/package.json`)) {
-      console.error('Script must be executed in the same directory that your package.json file exists at')
-      return;
+    const checked = [];
+    const closestPackageJson = (dir) => {
+      if (!existsSync(dir)) {
+        throw Error(`Directory does not exist: "${dir}"`);
+      }
+
+      const testPath = resolve(dir, 'package.json');
+      checked.push(testPath);
+
+      if (existsSync(testPath)) {
+        return testPath;
+      }
+
+      if (dir === '/') {
+        throw Error(`No package.json found: ${os.EOL}\t${checked.join(`${os.EOL}\t`)}`);
+      }
+
+      return closestPackageJson(resolve(dir, '..'));
     }
 
-    const packageJson = require(`${currentPath}/package.json`);
-    console.log(__dirname);
+    const packageJsonPath = closestPackageJson(linkThis);
+    const packageJson = require(packageJsonPath);
 
-    if (!typeof packageJson === 'object' || !packageJson.name) {
+    console.log(`Found package.json file: ${packageJsonPath}`);
+    console.log(`Current directory: ${__dirname}`);
+
+    if (typeof packageJson !== 'object' || !packageJson.name) {
       console.error('package.json file must contain a name property');
       return;
     }
